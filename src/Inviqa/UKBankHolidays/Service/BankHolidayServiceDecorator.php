@@ -2,14 +2,16 @@
 
 namespace Inviqa\UKBankHolidays\Service;
 
+use DateTime;
 use DateTimeInterface;
-use Exception;
-use Inviqa\UKBankHolidays\Exception\UKBankHolidaysException;
+use Inviqa\UKBankHolidays\Exception\InvalidDateRangeException;
+use Inviqa\UKBankHolidays\Exception\UnknownRegionException;
 use Inviqa\UKBankHolidays\Region\Region;
-use Inviqa\UKBankHolidays\Result;
 
 class BankHolidayServiceDecorator
 {
+    private const DATETIME_FORMAT = 'Y-m-d';
+
     private $bankHolidayService;
 
     public function __construct(BankHolidayService $bankHolidayService)
@@ -19,29 +21,50 @@ class BankHolidayServiceDecorator
 
     public function check(DateTimeInterface $dateTime, ?Region $region = null): bool
     {
-        $result = $this->getBankHolidays();
+        $bankHolidays = $this->getDates($region);
+        $dateToCheck = $dateTime->format(self::DATETIME_FORMAT);
 
-        return true;
+        return array_key_exists($dateToCheck, $bankHolidays);
     }
 
-    public function getAll(
-        ?DateTimeInterface $from = null,
-        ?DateTimeInterface $to = null,
-        ?Region $region = null
-    ): array {
-        $result = $this->getBankHolidays();
 
-        return [];
-    }
-
-    private function getBankHolidays(): Result
+    public function getAll(?DateTimeInterface $from = null, ?DateTimeInterface $to = null, ?Region $region = null): array
     {
-        try {
-            $responseBody = $this->apiClient->getBankHolidays();
+        $bankHolidays = $this->getDates();
+        $dates = [];
 
-            return $this->responseParser->extractResultFrom($responseBody);
-        } catch (Exception $e) {
-            throw new UKBankHolidaysException($e->getMessage(), $e->getCode(), $e);
+        $fromTimestamp = ($from instanceof DateTimeInterface) ? $from->getTimestamp() : null;
+        $toTimestamp = ($to instanceof DateTimeInterface) ? $to->getTimestamp() : null;
+
+        if ($from !== null && $to !== null && $fromTimestamp >= $toTimestamp) {
+            throw InvalidDateRangeException::withDates($from, $to);
         }
+
+        foreach ($bankHolidays as $bankHoliday) {
+            $bankHolidayTimestamp = DateTime::createFromFormat(self::DATETIME_FORMAT, $bankHoliday['date'])->getTimestamp();
+
+            if (($fromTimestamp === null || $bankHolidayTimestamp >= $fromTimestamp) && ($toTimestamp === null || $bankHolidayTimestamp <= $toTimestamp)) {
+                $dates[] = $bankHoliday['date'];
+            }
+        }
+
+        return $dates;
+    }
+
+    private function getDates(?Region $region = null): array
+    {
+        if ($region === null) {
+            $dates = $this->bankHolidayService->getBankHolidaysSortedByDate();
+        } else {
+            $dates = $this->bankHolidayService->getBankHolidaysSortedByRegion();
+
+            if (array_key_exists($region->getRegion(), $dates)) {
+                $dates = $dates[$region->getRegion()];
+            } else {
+                throw UnknownRegionException::withRegion($region);
+            }
+        }
+
+        return $dates;
     }
 }
