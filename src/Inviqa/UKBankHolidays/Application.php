@@ -12,7 +12,7 @@ use Inviqa\UKBankHolidays\Service\BankHolidayServiceFactory;
 class Application
 {
     private const CACHE_KEY_PREFFIX_CHECK = 'check_';
-    private const CACHE_KEY_PREFFIX_LIST = 'all_';
+    private const CACHE_KEY_PREFFIX_LIST = 'list_';
     private const CACHE_KEY_PLACEHOLDER = '#_';
 
     private $bankHolidayDecorator;
@@ -45,6 +45,13 @@ class Application
     ): array {
 
         $cacheKey = self::CACHE_KEY_PREFFIX_LIST;
+
+        /**
+         * Cache Key Format: list_FROM_TO_REGION_
+         * eg: list_2019-06-06_2019-08-08_scotland_
+         * or with "to" value not set: list_2019-06-06_#_scotland_
+         * or with "region" value not set: list_2019-06-06_2019-08-08_#_
+         */
 
         if ($from !== null) {
             $cacheKey .= $from->getTimestamp();

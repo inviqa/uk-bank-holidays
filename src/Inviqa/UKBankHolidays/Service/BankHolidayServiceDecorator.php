@@ -30,7 +30,7 @@ class BankHolidayServiceDecorator
 
     public function getAll(?DateTimeInterface $from = null, ?DateTimeInterface $to = null, ?Region $region = null): array
     {
-        $bankHolidays = $this->getDates();
+        $bankHolidays = $this->getDates($region);
         $dates = [];
 
         $fromTimestamp = ($from instanceof DateTimeInterface) ? $from->getTimestamp() : null;
