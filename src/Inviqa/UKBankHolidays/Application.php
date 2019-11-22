@@ -20,16 +20,21 @@ class Application
         $this->bankHolidayDecorator = new BankHolidayServiceDecorator($this->bankHolidayService);
     }
 
-    public function check(DateTimeInterface $dateTime, ?Region $region = null): bool
+    public function check(DateTimeInterface $dateTime, ?string $region = null): bool
     {
+        if ($region !== null) {
+            $region = Region::createFromString($region);
+        }
+
         return $result = $this->bankHolidayDecorator->check($dateTime, $region);
     }
 
-    public function getAll(
-        ?DateTimeInterface $from = null,
-        ?DateTimeInterface $to = null,
-        ?Region $region = null
-    ): array {
+    public function getAll(?DateTimeInterface $from = null, ?DateTimeInterface $to = null, ?string $region = null): array
+    {
+        if ($region !== null) {
+            $region = Region::createFromString($region);
+        }
+
         return $result = $this->bankHolidayDecorator->getAll($from, $to, $region);
     }
 

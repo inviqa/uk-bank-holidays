@@ -35,9 +35,9 @@ final class Region
         return $regionObj;
     }
 
-    public function isAvailableRegion(string $region): bool
+    private function isAvailableRegion(string $region): bool
     {
-        return in_array($string, $this->regions);
+        return in_array($region, $this->regions);
     }
 
     public function getRegion()
