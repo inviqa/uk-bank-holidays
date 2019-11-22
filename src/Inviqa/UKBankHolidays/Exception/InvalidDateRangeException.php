@@ -10,7 +10,7 @@ class InvalidDateRangeException extends UKBankHolidaysException
 
     public static function withDates(DateTimeInterface $from, DateTimeInterface $to): InvalidDateRangeException
     {
-        $exception = new static(sprintf(self::INVALID_DATE_RANGE_MESSAGE, $to, $from));
+        $exception = new static(sprintf(self::INVALID_DATE_RANGE_MESSAGE, $to->format('Y-m-d'), $from->format('Y-m-d')));
 
         return $exception;
     }
