@@ -30,7 +30,7 @@ class Result
 
     public function getContent(): array
     {
-        return $this->getContent();
+        return $this->content;
     }
 
     public function isSuccess(): bool

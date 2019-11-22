@@ -11,31 +11,18 @@ use Inviqa\UKBankHolidays\Service\BankHolidayServiceFactory;
 
 class Application
 {
-    private const CACHE_KEY_PREFFIX_CHECK = 'check_';
-    private const CACHE_KEY_PREFFIX_LIST = 'list_';
-    private const CACHE_KEY_PLACEHOLDER = '#_';
-
     private $bankHolidayDecorator;
     private $bankHolidayService;
-    private $cache;
 
     public function __construct(Configuration $configuration, CacheProvider $cacheProvider)
     {
         $this->bankHolidayService = BankHolidayServiceFactory::buildFrom($configuration, $cacheProvider);
         $this->bankHolidayDecorator = new BankHolidayServiceDecorator($this->bankHolidayService);
-        $this->cache = $cacheProvider;
     }
 
-    public function check(DateTimeInterface $dateTime): bool
+    public function check(DateTimeInterface $dateTime, ?Region $region = null): bool
     {
-        $cacheKey = self::CACHE_KEY_PREFFIX_CHECK . $dateTime->getTimestamp();
-
-        if (!$this->cache->has($cacheKey)) {
-            $result = $this->bankHolidayDecorator->check($dateTime);
-            $this->cache->set($cacheKey, $result);
-        }
-
-        return $this->cache->get($cacheKey);
+        return $result = $this->bankHolidayDecorator->check($dateTime, $region);
     }
 
     public function getAll(
@@ -43,40 +30,7 @@ class Application
         ?DateTimeInterface $to = null,
         ?Region $region = null
     ): array {
-
-        $cacheKey = self::CACHE_KEY_PREFFIX_LIST;
-
-        /**
-         * Cache Key Format: list_FROM_TO_REGION_
-         * eg: list_2019-06-06_2019-08-08_scotland_
-         * or with "to" value not set: list_2019-06-06_#_scotland_
-         * or with "region" value not set: list_2019-06-06_2019-08-08_#_
-         */
-
-        if ($from !== null) {
-            $cacheKey .= $from->getTimestamp();
-        } else {
-            $cacheKey .= self::CACHE_KEY_PLACEHOLDER;
-        }
-
-        if ($to !== null) {
-            $cacheKey .= $to->getTimestamp();
-        } else {
-            $cacheKey .= self::CACHE_KEY_PLACEHOLDER;
-        }
-
-        if ($region !== null) {
-            $cacheKey .= $region->getRegion();
-        } else {
-            $cacheKey .= self::CACHE_KEY_PLACEHOLDER;
-        }
-
-        if (!$this->cache->has($cacheKey)) {
-            $result = $this->bankHolidayDecorator->getAll($from, $to, $region);
-            $this->cache->set($cacheKey, $result);
-        }
-
-        return $this->cache->get($cacheKey);
+        return $result = $this->bankHolidayDecorator->getAll($from, $to, $region);
     }
 
     public function getService(): BankHolidayService
