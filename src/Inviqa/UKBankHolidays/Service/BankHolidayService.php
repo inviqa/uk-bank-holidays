@@ -11,9 +11,9 @@ use Inviqa\UKBankHolidays\Result;
 
 class BankHolidayService
 {
-    public const CACHE_KEY = 'bank_holiday_raw_data';
-    public const CACHE_KEY_BY_DATE = 'by_date';
-    public const CACHE_KEY_BY_REGION = 'by_region';
+    public const CACHE_KEY_BY_DATE = 'bank_holiday_by_date';
+    public const CACHE_KEY_BY_REGION = 'bank_holiday_by_region';
+    public const CACHE_KEY_RAW_DATA = 'bank_holida_raw_data';
 
     private $apiClient;
     private $responseParser;
@@ -32,29 +32,38 @@ class BankHolidayService
     public function getBankHolidays(): Result
     {
         try {
-            if (!$this->cache->has(self::CACHE_KEY)) {
+            if (!$this->cache->has(self::CACHE_KEY_RAW_DATA)) {
                 $responseBody = $this->apiClient->getBankHolidays();
                 $result = $this->responseParser->extractResultFrom($responseBody);
 
-                $formattedData = $this->formatRawData($result);
-
-                $this->cache->set(self::CACHE_KEY, $formattedData);
+                $this->cache->set(self::CACHE_KEY_RAW_DATA, $result);
             }
 
-            return $this->cache->get(self::CACHE_KEY);
+            return $this->cache->get(self::CACHE_KEY_RAW_DATA);
 
         } catch (Exception $e) {
             throw new UKBankHolidaysException($e->getMessage(), $e->getCode(), $e);
         }
     }
 
-    private function formatRawData(Result $result)
+    public function getBankHolidaysSortedByDate(): array
     {
-        $data = [];
-        $data[self::CACHE_KEY_BY_DATE] = $this->formatDataByDate($result);
-        $data[self::CACHE_KEY_BY_REGION] = $this->formatDataByRegion($result);
+        if (!$this->cache->has(self::CACHE_KEY_BY_DATE)) {
+            $result = $this->getBankHolidays();
+            $this->cache->set(self::CACHE_KEY_BY_DATE, $this->formatDataByDate($result));
+        }
 
-        return $data;
+        return $this->cache->get(self::CACHE_KEY_BY_DATE);
+    }
+
+    public function getBankHolidaysSortedByRegion(): array
+    {
+        if (!$this->cache->has(self::CACHE_KEY_BY_REGION)) {
+            $result = $this->getBankHolidays();
+            $this->cache->set(self::CACHE_KEY_BY_REGION, $this->formatDataByRegion($result));
+        }
+
+        return $this->cache->get(self::CACHE_KEY_BY_REGION);
     }
 
     private function formatDataByDate(Result $result): array
