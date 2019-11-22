@@ -7,4 +7,6 @@ interface Configuration
     public function getDomain(): string;
 
     public function isTestMode(): bool;
+
+    public function getExtraConfig(): array;
 }

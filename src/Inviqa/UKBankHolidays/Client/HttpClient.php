@@ -2,22 +2,20 @@
 
 namespace Inviqa\UKBankHolidays\Client;
 
-use GuzzleHttp\Client;
-
-class HttpApiClient implements ApiClient
+class HttpClient implements Client
 {
-    public const ENDPOINT = 'bank-holidays.json';
+    public const SERVICE_URL = 'https://www.gov.uk/bank-holidays.json';
 
     private $client;
 
-    public function __construct(Client $client)
+    public function __construct(\GuzzleHttp\Client $client)
     {
         $this->client = $client;
     }
 
     public function getBankHolidays(): string
     {
-        $response = $this->client->get(self::ENDPOINT);
+        $response = $this->client->get(self::SERVICE_URL);
 
         return $response->getBody()->getContents();
     }

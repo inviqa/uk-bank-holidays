@@ -1,14 +1,16 @@
 <?php
 
-namespace Inviqa\UKBankHolidays;
+namespace Inviqa\UKBankHolidays\Service;
 
-use Inviqa\UKBankHolidays\Client\ApiClientFactory;
+use Inviqa\UKBankHolidays\Client\ClientFactory;
+use Inviqa\UKBankHolidays\Configuration;
+use Inviqa\UKBankHolidays\ResponseParser;
 
 class BankHolidayServiceFactory
 {
     public static function buildFrom(Configuration $configuration): BankHolidayService
     {
-        $apiClient = ApiClientFactory::buildFrom($configuration);
+        $apiClient = ClientFactory::buildFrom($configuration);
         $responseParser = new ResponseParser();
 
         return new BankHolidayService(

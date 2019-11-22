@@ -18,7 +18,7 @@ class Result
     {
     }
 
-    public static function successFromArray(array $content): Response
+    public static function successFromArray(array $content): Result
     {
         $response = new self();
 

@@ -3,6 +3,9 @@
 namespace Inviqa\UKBankHolidays;
 
 use DateTimeInterface;
+use Inviqa\UKBankHolidays\Region\Region;
+use Inviqa\UKBankHolidays\Service\BankHolidayService;
+use Inviqa\UKBankHolidays\Service\BankHolidayServiceFactory;
 
 class Application
 {
@@ -18,8 +21,11 @@ class Application
         return $this->bankHolidayService->check($dateTime);
     }
 
-    public function getAll(?DateTimeInterface $from = null, ?DateTimeInterface $to = null, $region = null): array
-    {
+    public function getAll(
+        ?DateTimeInterface $from = null,
+        ?DateTimeInterface $to = null,
+        ?Region $region = null
+    ): array {
         return $this->bankHolidayService->getAll($from, $to, $region);
     }
 

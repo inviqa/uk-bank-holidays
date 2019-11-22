@@ -2,7 +2,7 @@
 
 namespace Inviqa\UKBankHolidays\Client;
 
-interface ApiClient
+interface Client
 {
     public function getBankHolidays(): string;
 }
