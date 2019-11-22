@@ -8,18 +8,16 @@ use PhpSpec\ObjectBehavior;
 
 class UnknownRegionExceptionSpec extends ObjectBehavior
 {
+    private const INVALID_REGION = 'alderaan';
+
     function it_is_initializable()
     {
         $this->shouldHaveType(UnknownRegionException::class);
     }
 
-    function it_can_be_constructed_with_a_region(Region $region)
+    function it_can_be_constructed_with_a_region()
     {
-        $regionName = 'alderaan';
-
-        $region->getRegion()->willReturn($regionName);
-
-        $this->beConstructedWithRegion($region);
-        $this->getMessage()->shouldBe(sprintf(UnknownRegionException::UNKNOW_REGION_MESSAGE, $regionName));
+        $this->beConstructedWithRegion(self::INVALID_REGION);
+        $this->getMessage()->shouldBe(sprintf(UnknownRegionException::UNKNOW_REGION_MESSAGE, self::INVALID_REGION));
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Inviqa\UKBankHolidays\Region;
+namespace Inviqa\UKBankHolidays;
 
 use Inviqa\UKBankHolidays\Exception\UnknownRegionException;
 

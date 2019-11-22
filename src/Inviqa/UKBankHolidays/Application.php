@@ -4,7 +4,6 @@ namespace Inviqa\UKBankHolidays;
 
 use DateTimeInterface;
 use Inviqa\UKBankHolidays\Cache\CacheProvider;
-use Inviqa\UKBankHolidays\Region\Region;
 use Inviqa\UKBankHolidays\Service\BankHolidayService;
 use Inviqa\UKBankHolidays\Service\BankHolidayServiceDecorator;
 use Inviqa\UKBankHolidays\Service\BankHolidayServiceFactory;
