@@ -10,18 +10,30 @@ use Inviqa\UKBankHolidays\Service\BankHolidayServiceFactory;
 
 class Application
 {
+    private const CACHE_KEY_PREFFIX_CHECK = 'check_';
+    private const CACHE_KEY_PREFFIX_LIST = 'all_';
+
     private $bankHolidayService;
-    private $cacheProvider;
+    private $cache;
 
     public function __construct(Configuration $configuration, CacheProvider $cacheProvider)
     {
         $this->bankHolidayService = BankHolidayServiceFactory::buildFrom($configuration);
-        $this->cacheProvider = $cacheProvider;
+        $this->cache = $cacheProvider;
     }
 
     public function check(DateTimeInterface $dateTime): bool
     {
-        return $this->bankHolidayService->check($dateTime);
+        $cacheKey = self::CACHE_KEY_PREFFIX_CHECK . $dateTime->getTimestamp();
+
+        if ($this->cache->has($cacheKey)) {
+            $value = $this->cache->get($cacheKey);
+        } else {
+            $value = $this->bankHolidayService->check($dateTime);
+            $this->cache->set($cacheKey, $value);
+        }
+
+        return $value;
     }
 
     public function getAll(
@@ -29,7 +41,36 @@ class Application
         ?DateTimeInterface $to = null,
         ?Region $region = null
     ): array {
-        return $this->bankHolidayService->getAll($from, $to, $region);
+
+        $cacheKey = self::CACHE_KEY_PREFFIX_LIST;
+
+        if ($from !== null) {
+            $cacheKey .= $from->getTimestamp();
+        } else {
+            $cacheKey .= '#_';
+        }
+
+        if ($to !== null) {
+            $cacheKey .= $to->getTimestamp();
+        } else {
+            $cacheKey .= '#_';
+        }
+
+        if ($region !== null) {
+            $cacheKey .= $region->getRegion();
+        } else {
+            $cacheKey .= '#';
+        }
+
+
+        if ($this->cache->has($cacheKey)) {
+            $value = $this->cache->get($cacheKey);
+        } else {
+            $value = $this->bankHolidayService->getAll($from, $to, $region);
+            $this->cache->set($cacheKey, $value);
+        }
+
+        return $value;
     }
 
     public function getService(): BankHolidayService
