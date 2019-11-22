@@ -31,6 +31,8 @@ final class Region
         }
 
         $regionObj->region = $region;
+
+        return $regionObj;
     }
 
     public function isAvailableRegion(string $region): bool
