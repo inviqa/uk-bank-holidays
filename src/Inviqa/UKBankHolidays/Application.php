@@ -21,7 +21,7 @@ class Application
 
     public function __construct(Configuration $configuration, CacheProvider $cacheProvider)
     {
-        $this->bankHolidayService = BankHolidayServiceFactory::buildFrom($configuration);
+        $this->bankHolidayService = BankHolidayServiceFactory::buildFrom($configuration, $cacheProvider);
         $this->bankHolidayDecorator = new BankHolidayServiceDecorator($this->bankHolidayService);
         $this->cache = $cacheProvider;
     }
@@ -30,22 +30,19 @@ class Application
     {
         $cacheKey = self::CACHE_KEY_PREFFIX_CHECK . $dateTime->getTimestamp();
 
-        if ($this->cache->has($cacheKey)) {
-            $value = $this->cache->get($cacheKey);
-        } else {
-            $value = $this->bankHolidayService->check($dateTime);
-            $this->cache->set($cacheKey, $value);
+        if (!$this->cache->has($cacheKey)) {
+            $result = $this->bankHolidayDecorator->check($dateTime);
+            $this->cache->set($cacheKey, $result);
         }
 
-        return $value;
+        return $this->cache->get($cacheKey);
     }
 
     public function getAll(
         ?DateTimeInterface $from = null,
         ?DateTimeInterface $to = null,
         ?Region $region = null
-    ): array
-    {
+    ): array {
 
         $cacheKey = self::CACHE_KEY_PREFFIX_LIST;
 
@@ -67,15 +64,12 @@ class Application
             $cacheKey .= self::CACHE_KEY_PLACEHOLDER;
         }
 
-
-        if ($this->cache->has($cacheKey)) {
-            $value = $this->cache->get($cacheKey);
-        } else {
-            $value = $this->bankHolidayService->getAll($from, $to, $region);
-            $this->cache->set($cacheKey, $value);
+        if (!$this->cache->has($cacheKey)) {
+            $result = $this->bankHolidayDecorator->getAll($from, $to, $region);
+            $this->cache->set($cacheKey, $result);
         }
 
-        return $value;
+        return $this->cache->get($cacheKey);
     }
 
     public function getService(): BankHolidayService

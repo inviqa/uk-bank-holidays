@@ -10,7 +10,7 @@ class Result
     private $success = false;
 
     /**
-     * @var string
+     * @var array
      */
     private $content;
 
@@ -28,7 +28,7 @@ class Result
         return $response;
     }
 
-    public function getContent(): string
+    public function getContent(): array
     {
         return $this->getContent();
     }

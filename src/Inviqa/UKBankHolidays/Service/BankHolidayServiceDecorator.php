@@ -4,10 +4,8 @@ namespace Inviqa\UKBankHolidays\Service;
 
 use DateTimeInterface;
 use Exception;
-use Inviqa\UKBankHolidays\Client\Client;
 use Inviqa\UKBankHolidays\Exception\UKBankHolidaysException;
 use Inviqa\UKBankHolidays\Region\Region;
-use Inviqa\UKBankHolidays\ResponseParser;
 use Inviqa\UKBankHolidays\Result;
 
 class BankHolidayServiceDecorator
@@ -19,7 +17,7 @@ class BankHolidayServiceDecorator
         $this->bankHolidayService = $bankHolidayService;
     }
 
-    public function check(DateTimeInterface $dateTime): bool
+    public function check(DateTimeInterface $dateTime, ?Region $region = null): bool
     {
         $result = $this->getBankHolidays();
 
