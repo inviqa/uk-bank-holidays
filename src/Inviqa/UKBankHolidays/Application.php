@@ -3,6 +3,7 @@
 namespace Inviqa\UKBankHolidays;
 
 use DateTimeInterface;
+use Inviqa\UKBankHolidays\Cache\CacheProvider;
 use Inviqa\UKBankHolidays\Region\Region;
 use Inviqa\UKBankHolidays\Service\BankHolidayService;
 use Inviqa\UKBankHolidays\Service\BankHolidayServiceFactory;
@@ -10,10 +11,12 @@ use Inviqa\UKBankHolidays\Service\BankHolidayServiceFactory;
 class Application
 {
     private $bankHolidayService;
+    private $cacheProvider;
 
-    public function __construct(Configuration $configuration)
+    public function __construct(Configuration $configuration, CacheProvider $cacheProvider)
     {
         $this->bankHolidayService = BankHolidayServiceFactory::buildFrom($configuration);
+        $this->cacheProvider = $cacheProvider;
     }
 
     public function check(DateTimeInterface $dateTime): bool

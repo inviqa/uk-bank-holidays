@@ -2,13 +2,11 @@
 
 namespace Inviqa\UKBankHolidays\Cache;
 
-class InMemoryCacheProvider implements CacheProvider
+class DummyCacheProvider implements CacheProvider
 {
-    private $cache = [];
-
     public function has(string $key): bool
     {
-        return array_key_exists($key, $this->cache);
+        return false;
     }
 
     /**
@@ -16,7 +14,6 @@ class InMemoryCacheProvider implements CacheProvider
      */
     public function set(string $key, $value)
     {
-        $this->cache[$key] = $value;
     }
 
     /**
@@ -24,18 +21,14 @@ class InMemoryCacheProvider implements CacheProvider
      */
     public function get(string $key)
     {
-        return $this->has($key) ? $this->cache[$key] : null;
+        return null;
     }
 
     public function delete(string $key)
     {
-        if ($this->has($key)) {
-            unset($this->cache[$key]);
-        }
     }
 
     public function flush()
     {
-        $this->cache = [];
     }
 }
