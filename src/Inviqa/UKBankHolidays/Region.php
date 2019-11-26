@@ -4,7 +4,7 @@ namespace Inviqa\UKBankHolidays;
 
 use Inviqa\UKBankHolidays\Exception\UnknownRegionException;
 
-final class Region
+class Region
 {
     private const REGION_ENGLAND_WALES = 'england-and-wales';
     private const REGION_NORTHERN_IRELAND = 'northern-ireland';

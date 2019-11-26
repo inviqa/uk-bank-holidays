@@ -6,7 +6,7 @@ use DateTime;
 use DateTimeInterface;
 use Inviqa\UKBankHolidays\Exception\InvalidDateRangeException;
 use Inviqa\UKBankHolidays\Exception\UnknownRegionException;
-use Inviqa\UKBankHolidays\Region\Region;
+use Inviqa\UKBankHolidays\Region;
 
 class BankHolidayServiceDecorator
 {
@@ -44,7 +44,7 @@ class BankHolidayServiceDecorator
             $bankHolidayTimestamp = DateTime::createFromFormat(self::DATETIME_FORMAT, $bankHoliday['date'])->getTimestamp();
 
             if (($fromTimestamp === null || $bankHolidayTimestamp >= $fromTimestamp) && ($toTimestamp === null || $bankHolidayTimestamp <= $toTimestamp)) {
-                $dates[] = $bankHoliday['date'];
+                $dates[$bankHoliday['date']] = $bankHoliday['date'];
             }
         }
 
@@ -61,7 +61,7 @@ class BankHolidayServiceDecorator
             if (array_key_exists($region->getRegion(), $dates)) {
                 $dates = $dates[$region->getRegion()];
             } else {
-                throw UnknownRegionException::withRegion($region);
+                throw UnknownRegionException::withRegion($region->getRegion());
             }
         }
 

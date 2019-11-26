@@ -12,6 +12,18 @@ class TestResponseBodyFactory
                     'division' => 'england-and-wales',
                     'events'   => [
                         [
+                            'title'   => 'REGION TEST 1',
+                            'date'    => '2019-06-06',
+                            'notes'   => '',
+                            'bunting' => true,
+                        ],
+                        [
+                            'title'   => 'REGION TEST 2',
+                            'date'    => '2019-12-24',
+                            'notes'   => '',
+                            'bunting' => true,
+                        ],
+                        [
                             'title'   => 'Christmas Day',
                             'date'    => '2019-12-25',
                             'notes'   => '',

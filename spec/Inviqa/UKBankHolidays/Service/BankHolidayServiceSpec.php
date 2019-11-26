@@ -8,6 +8,7 @@ use Inviqa\UKBankHolidays\ResponseParser;
 use Inviqa\UKBankHolidays\Service\BankHolidayService;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
+use TestService\TestBankHolidaysData;
 use TestService\TestResponseBodyFactory;
 
 class BankHolidayServiceSpec extends ObjectBehavior
@@ -30,20 +31,7 @@ class BankHolidayServiceSpec extends ObjectBehavior
         ResponseParser $responseParser,
         CacheProvider $cacheProvider
     ) {
-        $expectedReturnValue = [
-            '2019-12-25' => [
-                'date'  => '2019-12-25',
-                'title' => 'Christmas Day',
-            ],
-            '2019-12-26' => [
-                'date'  => '2019-12-26',
-                'title' => 'Boxing Day',
-            ],
-            '2020-01-01' => [
-                'date'  => '2020-01-01',
-                'title' => 'New Year’s Day',
-            ],
-        ];
+        $expectedReturnValue = TestBankHolidaysData::getBankHolidaysSortedByDate();
 
         $responseBody = TestResponseBodyFactory::buildWellFormedResponseJson();
         $decodedResponse = json_decode($responseBody, true);
@@ -64,36 +52,7 @@ class BankHolidayServiceSpec extends ObjectBehavior
         ResponseParser $responseParser,
         CacheProvider $cacheProvider
     ) {
-        $expectedReturnValue = [
-            'england-and-wales' => [
-                '2019-12-25' => [
-                    'date'  => '2019-12-25',
-                    'title' => 'Christmas Day',
-                ],
-                '2019-12-26' => [
-                    'date'  => '2019-12-26',
-                    'title' => 'Boxing Day',
-                ],
-                '2020-01-01' => [
-                    'date'  => '2020-01-01',
-                    'title' => 'New Year’s Day',
-                ],
-            ],
-            'scotland'          => [
-                '2019-12-25' => [
-                    'date'  => '2019-12-25',
-                    'title' => 'Christmas Day',
-                ],
-                '2019-12-26' => [
-                    'date'  => '2019-12-26',
-                    'title' => 'Boxing Day',
-                ],
-                '2020-01-01' => [
-                    'date'  => '2020-01-01',
-                    'title' => 'New Year’s Day',
-                ],
-            ],
-        ];
+        $expectedReturnValue = TestBankHolidaysData::getBankHolidaysSortedByRegion();
 
         $responseBody = TestResponseBodyFactory::buildWellFormedResponseJson();
         $decodedResponse = json_decode($responseBody, true);
