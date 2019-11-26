@@ -7,7 +7,7 @@ use function json_decode;
 
 class ResponseParser
 {
-    public function extractResultFrom(string $responseBody): Result
+    public function decodeResponse(string $responseBody): array
     {
         $decodedResponse = json_decode($responseBody, true);
 
@@ -15,6 +15,6 @@ class ResponseParser
             throw UnknownResponseException::withResponseBody($responseBody);
         }
 
-        return Result::successFromArray($decodedResponse);
+        return $decodedResponse;
     }
 }

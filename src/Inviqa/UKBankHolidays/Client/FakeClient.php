@@ -21,20 +21,12 @@ class FakeClient implements Client
 
         $response = null;
 
-        if (array_key_exists($extraConfig['testResults']['success'])) {
-            $response = json_encode($extraConfig['testResults']['success']);
+        if ($extraConfig['response_body']['well-formed'] !== null) {
+            $response = $extraConfig['response_body']['well-formed'];
         }
 
-        if (array_key_exists($resultChecksum, $extraConfig['testResults']['exception'])) {
-            throw new UKBankHolidaysException($extraConfig['testResults']['exception'][$resultChecksum]['message']);
-        }
-
-        if ($response === null) {
-            throw new RuntimeException(sprintf(
-                'No matching predetermined result found for event ID %s and event key %s',
-                $event->getEventId(),
-                $event->getEventKey()
-            ));
+        if ($extraConfig['response_body']['malformed'] !== null) {
+            $response = $extraConfig['response_body']['malformed'];
         }
 
         return $response;

@@ -12,9 +12,7 @@ class ClientFactory
             return new FakeClient($configuration);
         }
 
-        $client = new \GuzzleHttp\Client([
-            'base_uri' => $configuration->getDomain(),
-        ]);
+        $client = new \GuzzleHttp\Client();
 
         return new HttpClient($client);
     }

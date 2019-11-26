@@ -32,8 +32,8 @@ class BankHolidayService
     public function getBankHolidaysSortedByDate(): array
     {
         if (!$this->cache->has(self::CACHE_KEY_BY_DATE)) {
-            $result = $this->getBankHolidays();
-            $this->cache->set(self::CACHE_KEY_BY_DATE, $this->formatDataByDate($result));
+            $content = $this->getBankHolidays();
+            $this->cache->set(self::CACHE_KEY_BY_DATE, $this->formatDataByDate($content));
         }
 
         return $this->cache->get(self::CACHE_KEY_BY_DATE);
@@ -42,21 +42,21 @@ class BankHolidayService
     public function getBankHolidaysSortedByRegion(): array
     {
         if (!$this->cache->has(self::CACHE_KEY_BY_REGION)) {
-            $result = $this->getBankHolidays();
-            $this->cache->set(self::CACHE_KEY_BY_REGION, $this->formatDataByRegion($result));
+            $content = $this->getBankHolidays();
+            $this->cache->set(self::CACHE_KEY_BY_REGION, $this->formatDataByRegion($content));
         }
 
         return $this->cache->get(self::CACHE_KEY_BY_REGION);
     }
 
-    private function getBankHolidays(): Result
+    private function getBankHolidays(): array
     {
         try {
             if (!$this->cache->has(self::CACHE_KEY_RAW_DATA)) {
                 $responseBody = $this->apiClient->getBankHolidays();
-                $result = $this->responseParser->extractResultFrom($responseBody);
+                $content = $this->responseParser->decodeResponse($responseBody);
 
-                $this->cache->set(self::CACHE_KEY_RAW_DATA, $result);
+                $this->cache->set(self::CACHE_KEY_RAW_DATA, $content);
             }
 
             return $this->cache->get(self::CACHE_KEY_RAW_DATA);
@@ -66,11 +66,11 @@ class BankHolidayService
         }
     }
 
-    private function formatDataByDate(Result $result): array
+    private function formatDataByDate($content = []): array
     {
         $data = [];
 
-        foreach ($result->getContent() as $division) {
+        foreach ($content as $division) {
             foreach ($division['events'] as $event) {
                 $data[$event['date']] = [
                     'date'  => $event['date'],
@@ -82,11 +82,11 @@ class BankHolidayService
         return $data;
     }
 
-    private function formatDataByRegion(Result $result): array
+    private function formatDataByRegion($content = []): array
     {
         $data = [];
 
-        foreach ($result->getContent() as $division) {
+        foreach ($content as $division) {
             $region = $division['division'];
 
             foreach ($division['events'] as $event) {
