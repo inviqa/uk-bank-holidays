@@ -6,7 +6,6 @@ use DateTime;
 use Inviqa\UKBankHolidays\Application;
 use Inviqa\UKBankHolidays\Cache\CacheProvider;
 use Inviqa\UKBankHolidays\Configuration;
-use Inviqa\UKBankHolidays\Region;
 use Inviqa\UKBankHolidays\Service\BankHolidayService;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
