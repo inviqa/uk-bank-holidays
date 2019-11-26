@@ -39,10 +39,8 @@ class BankHolidayServiceSpec extends ObjectBehavior
         $client->getBankHolidays()->willReturn($responseBody);
         $responseParser->decodeResponse($responseBody)->willReturn($decodedResponse);
 
-        $cacheProvider->has(BankHolidayService::CACHE_KEY_BY_DATE)->willReturn(false);
-        $cacheProvider->has(BankHolidayService::CACHE_KEY_RAW_DATA)->willReturn(false);
-        $cacheProvider->set(BankHolidayService::CACHE_KEY_BY_DATE, Argument::type('array'))->shouldBeCalled();
-        $cacheProvider->set(BankHolidayService::CACHE_KEY_RAW_DATA, Argument::type('array'))->shouldBeCalled();
+        $cacheProvider->has(Argument::type('string'))->willReturn(false);
+        $cacheProvider->set(Argument::type('string'), Argument::type('array'))->shouldBeCalled();
 
         $this->getBankHolidaysSortedByDate()->shouldBe($expectedReturnValue);
     }
@@ -60,10 +58,8 @@ class BankHolidayServiceSpec extends ObjectBehavior
         $client->getBankHolidays()->willReturn($responseBody);
         $responseParser->decodeResponse($responseBody)->willReturn($decodedResponse);
 
-        $cacheProvider->has(BankHolidayService::CACHE_KEY_BY_REGION)->willReturn(false);
-        $cacheProvider->has(BankHolidayService::CACHE_KEY_RAW_DATA)->willReturn(false);
-        $cacheProvider->set(BankHolidayService::CACHE_KEY_BY_REGION, Argument::type('array'))->shouldBeCalled();
-        $cacheProvider->set(BankHolidayService::CACHE_KEY_RAW_DATA, Argument::type('array'))->shouldBeCalled();
+        $cacheProvider->has(Argument::type('string'))->willReturn(false);
+        $cacheProvider->set(Argument::type('string'), Argument::type('array'))->shouldBeCalled();
 
         $this->getBankHolidaysSortedByRegion()->shouldBe($expectedReturnValue);
     }

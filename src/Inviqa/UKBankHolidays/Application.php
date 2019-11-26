@@ -25,7 +25,7 @@ class Application
             $region = Region::createFromString($region);
         }
 
-        return $result = $this->bankHolidayDecorator->check($dateTime, $region);
+        return $this->bankHolidayDecorator->check($dateTime, $region);
     }
 
     public function getAll(?DateTimeInterface $from = null, ?DateTimeInterface $to = null, ?string $region = null): array
@@ -34,7 +34,7 @@ class Application
             $region = Region::createFromString($region);
         }
 
-        return $result = $this->bankHolidayDecorator->getAll($from, $to, $region);
+        return $this->bankHolidayDecorator->getAll($from, $to, $region);
     }
 
     public function getService(): BankHolidayService
