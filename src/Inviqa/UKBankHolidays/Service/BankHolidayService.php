@@ -15,16 +15,16 @@ class BankHolidayService
     public const CACHE_KEY_BY_REGION = 'bank_holiday_by_region';
     public const CACHE_KEY_RAW_DATA = 'bank_holiday_raw_data';
 
-    private $apiClient;
+    private $client;
     private $responseParser;
     private $cache;
 
     public function __construct(
-        Client $apiClient,
+        Client $client,
         ResponseParser $responseParser,
         CacheProvider $cacheProvider
     ) {
-        $this->apiClient = $apiClient;
+        $this->client = $client;
         $this->responseParser = $responseParser;
         $this->cache = $cacheProvider;
     }
@@ -33,33 +33,40 @@ class BankHolidayService
     {
         if (!$this->cache->has(self::CACHE_KEY_BY_DATE)) {
             $content = $this->getBankHolidays();
-            $this->cache->set(self::CACHE_KEY_BY_DATE, $this->formatDataByDate($content));
-        }
+            $formattedData = $this->formatDataByDate($content);
+            $this->cache->set(self::CACHE_KEY_BY_DATE, $formattedData);
 
-        return $this->cache->get(self::CACHE_KEY_BY_DATE);
+            return $formattedData;
+        } else {
+            return $this->cache->get(self::CACHE_KEY_BY_DATE);
+        }
     }
 
     public function getBankHolidaysSortedByRegion(): array
     {
         if (!$this->cache->has(self::CACHE_KEY_BY_REGION)) {
             $content = $this->getBankHolidays();
-            $this->cache->set(self::CACHE_KEY_BY_REGION, $this->formatDataByRegion($content));
-        }
+            $formattedData = $this->formatDataByRegion($content);
+            $this->cache->set(self::CACHE_KEY_BY_REGION, $formattedData);
 
-        return $this->cache->get(self::CACHE_KEY_BY_REGION);
+            return $formattedData;
+        } else {
+            return $this->cache->get(self::CACHE_KEY_BY_REGION);
+        }
     }
 
     private function getBankHolidays(): array
     {
         try {
             if (!$this->cache->has(self::CACHE_KEY_RAW_DATA)) {
-                $responseBody = $this->apiClient->getBankHolidays();
+                $responseBody = $this->client->getBankHolidays();
                 $content = $this->responseParser->decodeResponse($responseBody);
-
                 $this->cache->set(self::CACHE_KEY_RAW_DATA, $content);
-            }
 
-            return $this->cache->get(self::CACHE_KEY_RAW_DATA);
+                return $content;
+            } else {
+                return $this->cache->get(self::CACHE_KEY_RAW_DATA);
+            }
 
         } catch (Exception $e) {
             throw new UKBankHolidaysException($e->getMessage(), $e->getCode(), $e);
