@@ -9,6 +9,7 @@ use Behat\Gherkin\Node\TableNode;
 use Inviqa\UKBankHolidays\Application;
 use Inviqa\UKBankHolidays\Cache\DummyCacheProvider;
 use TestService\TestConfiguration;
+use Webmozart\Assert\Assert;
 
 /**
  * Defines application features from the specific context.
@@ -20,6 +21,15 @@ class UKBankHolidaysEventContext implements Context
      */
     private $application;
 
+    /**
+     * @var TestConfiguration
+     */
+    private $configuration;
+
+    /**
+     * @var bool
+     */
+    private $result;
 
     /**
      * Initializes context.
@@ -30,27 +40,9 @@ class UKBankHolidaysEventContext implements Context
      */
     public function __construct()
     {
-        $configuration = new TestConfiguration();
-        $configuration->addSuccessEvent();
         $cacheProvider = new DummyCacheProvider();
-
-        $this->application = new Application($configuration, $cacheProvider);
-    }
-
-    /**
-     * @Given the :arg1 is a bank holiday
-     */
-    public function theIsABankHoliday($arg1)
-    {
-        assert();
-    }
-
-    /**
-     * @When a developer checks if the date :arg1 is bank holiday
-     */
-    public function aDeveloperChecksIfTheDateIsBankHoliday($arg1)
-    {
-        throw new PendingException();
+        $this->configuration = new TestConfiguration();
+        $this->application = new Application($this->configuration, $cacheProvider);
     }
 
     /**
@@ -58,7 +50,7 @@ class UKBankHolidaysEventContext implements Context
      */
     public function theResultShouldBeTrue()
     {
-        throw new PendingException();
+        Assert::true($this->result);
     }
 
     /**
@@ -78,26 +70,25 @@ class UKBankHolidaysEventContext implements Context
     }
 
     /**
-     * @Given the :arg1 is a bank holiday in :arg2
+     * @Given the :date is a bank holiday in :region
      */
-    public function theIsABankHolidayIn($arg1, $arg2)
+    public function theIsABankHolidayIn($date, $region)
     {
-        throw new PendingException();
+        $this->configuration->addBankHolidayResult($region, $date);
     }
 
     /**
-     * @When a developer checks if the date :arg1 is bank holiday in :arg2
+     * @When a developer checks if the date :date is bank holiday in :region
      */
-    public function aDeveloperChecksIfTheDateIsBankHolidayIn($arg1, $arg2)
+    public function aDeveloperChecksIfTheDateIsBankHolidayIn($date, $region)
     {
-        throw new PendingException();
+        $this->result = $this->application->check(\DateTime::createFromFormat('Y-m-d', $date), $region);
     }
 
     /**
-     * @Given the :arg1 is not a bank holiday in :arg2
+     * @Given the :date is not a bank holiday in :region
      */
-    public function theIsNotABankHolidayIn($arg1, $arg2)
+    public function theIsNotABankHolidayIn($date, $region)
     {
-        throw new PendingException();
     }
 }

@@ -8,8 +8,8 @@ class TestConfiguration implements Configuration
 {
     private $extraConfig = [
         'response_body' => [
-            'well-formed' => null,
-            'malformed'   => null,
+            // 'well-formed' => null,
+            // 'malformed'   => null,
         ],
     ];
 
@@ -21,6 +21,21 @@ class TestConfiguration implements Configuration
     public function getExtraConfig(): array
     {
         return $this->extraConfig;
+    }
+
+    public function addBankHolidayResult(string $region, string $date)
+    {
+        $this->extraConfig['response_body'][$region] = [
+            'division' => $region,
+            'events'   => [
+                [
+                    'title'   => 'Sample Holiday',
+                    'date'    => $date,
+                    'notes'   => '',
+                    'bunting' => true,
+                ],
+            ],
+        ];
     }
 
     public function addSuccessEvent()

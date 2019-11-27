@@ -19,16 +19,18 @@ class FakeClient implements Client
     {
         $extraConfig = $this->configuration->getExtraConfig();
 
-        $response = null;
+        // $response = null;
 
-        if ($extraConfig['response_body']['well-formed'] !== null) {
-            $response = $extraConfig['response_body']['well-formed'];
-        }
+        return json_encode($extraConfig['response_body']);
 
-        if ($extraConfig['response_body']['malformed'] !== null) {
-            $response = $extraConfig['response_body']['malformed'];
-        }
-
-        return $response;
+        // if ($extraConfig['response_body']['well-formed'] !== null) {
+        //     $response = $extraConfig['response_body']['well-formed'];
+        // }
+        //
+        // if ($extraConfig['response_body']['malformed'] !== null) {
+        //     $response = $extraConfig['response_body']['malformed'];
+        // }
+        //
+        // return $response;
     }
 }
