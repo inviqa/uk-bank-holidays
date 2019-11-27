@@ -35,7 +35,7 @@ class ApplicationSpec extends ObjectBehavior
         CacheProvider $cacheProvider,
         Configuration $configuration
     ) {
-        $date = DateTime::createFromFormat(TestBankHolidaysData::DATETIME_FORMAT, TestBankHolidaysData::REGIONAL_BANK_HOLIDAY);
+        $date = DateTime::createFromFormat(TestBankHolidaysData::DATETIME_FORMAT, TestBankHolidaysData::BANK_HOLIDAY);
         $extraConfig = [
             'response_body' => [
                 'well-formed' => TestResponseBodyFactory::buildWellFormedResponseJson(),
@@ -55,7 +55,7 @@ class ApplicationSpec extends ObjectBehavior
         CacheProvider $cacheProvider,
         Configuration $configuration
     ) {
-        $date = DateTime::createFromFormat(TestBankHolidaysData::DATETIME_FORMAT, TestBankHolidaysData::REGIONAL_BANK_HOLIDAY);
+        $date = DateTime::createFromFormat(TestBankHolidaysData::DATETIME_FORMAT, TestBankHolidaysData::NON_BANK_HOLIDAY);
         $extraConfig = [
             'response_body' => [
                 'well-formed' => TestResponseBodyFactory::buildWellFormedResponseJson(),
@@ -70,7 +70,7 @@ class ApplicationSpec extends ObjectBehavior
         $this->check($date, 'scotland')->shouldBe(false);
     }
 
-    function it_returns_an_array_with_three_items_for_a_date_range
+    function it_returns_an_array_for_a_date_range
     (
         CacheProvider $cacheProvider,
         Configuration $configuration
@@ -91,7 +91,7 @@ class ApplicationSpec extends ObjectBehavior
         $this->getAll($from, $to)->shouldBe(TestBankHolidaysData::getExpectedResultForDateRange());
     }
 
-    function it_returns_an_array_with_three_items_for_a_date_range_with_a_region_with_additional_bank_holidays
+    function it_returns_an_array_for_a_date_range_with_a_region
     (
         CacheProvider $cacheProvider,
         Configuration $configuration
@@ -109,7 +109,7 @@ class ApplicationSpec extends ObjectBehavior
         $cacheProvider->has(Argument::type('string'))->willReturn(false);
         $cacheProvider->set(Argument::type('string'), Argument::any())->shouldBeCalled();
 
-        $this->getAll($from, $to, 'england-and-wales')->shouldBe(TestBankHolidaysData::getExpectedResultForDateRange());
+        $this->getAll($from, $to, 'england-and-wales')->shouldBe(TestBankHolidaysData::getExpectedResultForDateRangeWithRegion());
     }
 
     function it_returns_an_empty_array_for_a_date_range_with_no_bank_holidays

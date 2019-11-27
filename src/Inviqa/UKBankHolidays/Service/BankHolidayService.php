@@ -7,13 +7,10 @@ use Inviqa\UKBankHolidays\Cache\CacheProvider;
 use Inviqa\UKBankHolidays\Client\Client;
 use Inviqa\UKBankHolidays\Exception\UKBankHolidaysException;
 use Inviqa\UKBankHolidays\ResponseParser;
-use Inviqa\UKBankHolidays\Result;
 
 class BankHolidayService
 {
-    public const CACHE_KEY_BY_DATE = 'bank_holiday_by_date';
-    public const CACHE_KEY_BY_REGION = 'bank_holiday_by_region';
-    public const CACHE_KEY_RAW_DATA = 'bank_holiday_raw_data';
+    public const CACHE_KEY = 'uk_bank_holidays';
 
     private $client;
     private $responseParser;
@@ -29,43 +26,18 @@ class BankHolidayService
         $this->cache = $cacheProvider;
     }
 
-    public function getBankHolidaysSortedByDate(): array
-    {
-        if (!$this->cache->has(self::CACHE_KEY_BY_DATE)) {
-            $content = $this->getBankHolidays();
-            $formattedData = $this->formatDataByDate($content);
-            $this->cache->set(self::CACHE_KEY_BY_DATE, $formattedData);
-
-            return $formattedData;
-        } else {
-            return $this->cache->get(self::CACHE_KEY_BY_DATE);
-        }
-    }
-
-    public function getBankHolidaysSortedByRegion(): array
-    {
-        if (!$this->cache->has(self::CACHE_KEY_BY_REGION)) {
-            $content = $this->getBankHolidays();
-            $formattedData = $this->formatDataByRegion($content);
-            $this->cache->set(self::CACHE_KEY_BY_REGION, $formattedData);
-
-            return $formattedData;
-        } else {
-            return $this->cache->get(self::CACHE_KEY_BY_REGION);
-        }
-    }
-
-    private function getBankHolidays(): array
+    public function getBankHolidays(): array
     {
         try {
-            if (!$this->cache->has(self::CACHE_KEY_RAW_DATA)) {
+            if (!$this->cache->has(self::CACHE_KEY)) {
                 $responseBody = $this->client->getBankHolidays();
-                $content = $this->responseParser->decodeResponse($responseBody);
-                $this->cache->set(self::CACHE_KEY_RAW_DATA, $content);
+                $response = $this->responseParser->decodeResponse($responseBody);
+                $content = $this->formatData($response);
+                $this->cache->set(self::CACHE_KEY, $content);
 
                 return $content;
             } else {
-                return $this->cache->get(self::CACHE_KEY_RAW_DATA);
+                return $this->cache->get(self::CACHE_KEY);
             }
 
         } catch (Exception $e) {
@@ -73,23 +45,7 @@ class BankHolidayService
         }
     }
 
-    private function formatDataByDate($content = []): array
-    {
-        $data = [];
-
-        foreach ($content as $division) {
-            foreach ($division['events'] as $event) {
-                $data[$event['date']] = [
-                    'date'  => $event['date'],
-                    'title' => $event['title'],
-                ];
-            }
-        }
-
-        return $data;
-    }
-
-    private function formatDataByRegion($content = []): array
+    private function formatData(array $content = []): array
     {
         $data = [];
 
@@ -97,9 +53,10 @@ class BankHolidayService
             $region = $division['division'];
 
             foreach ($division['events'] as $event) {
-                $data[$region][$event['date']] = [
-                    'date'  => $event['date'],
-                    'title' => $event['title'],
+                $data[$region . '_' . $event['date']] = [
+                    'region' => $region,
+                    'date'   => $event['date'],
+                    'title'  => $event['title'],
                 ];
             }
         }

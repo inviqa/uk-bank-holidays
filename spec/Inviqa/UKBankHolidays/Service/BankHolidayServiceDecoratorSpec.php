@@ -27,11 +27,11 @@ class BankHolidayServiceDecoratorSpec extends ObjectBehavior
     (
         BankHolidayService $bankHolidayService
     ) {
-        $date = DateTime::createFromFormat(TestBankHolidaysData::DATETIME_FORMAT, TestBankHolidaysData::REGIONAL_BANK_HOLIDAY);
-        $datesSortedByRegion = TestBankHolidaysData::getBankHolidaysSortedByRegion();
+        $date = DateTime::createFromFormat(TestBankHolidaysData::DATETIME_FORMAT, TestBankHolidaysData::BANK_HOLIDAY);
+        $dates = TestBankHolidaysData::getBankHolidays();
         $region = Region::createFromString('england-and-wales');
 
-        $bankHolidayService->getBankHolidaysSortedByRegion()->willReturn($datesSortedByRegion);
+        $bankHolidayService->getBankHolidays()->willReturn($dates);
 
         $this->check($date, $region)->shouldBe(true);
     }
@@ -40,40 +40,40 @@ class BankHolidayServiceDecoratorSpec extends ObjectBehavior
     (
         BankHolidayService $bankHolidayService
     ) {
-        $date = DateTime::createFromFormat(TestBankHolidaysData::DATETIME_FORMAT, TestBankHolidaysData::REGIONAL_BANK_HOLIDAY);
-        $datesSortedByRegion = TestBankHolidaysData::getBankHolidaysSortedByRegion();
+        $date = DateTime::createFromFormat(TestBankHolidaysData::DATETIME_FORMAT, TestBankHolidaysData::NON_BANK_HOLIDAY);
+        $dates = TestBankHolidaysData::getBankHolidays();
         $region = Region::createFromString('scotland');
 
-        $bankHolidayService->getBankHolidaysSortedByRegion()->willReturn($datesSortedByRegion);
+        $bankHolidayService->getBankHolidays()->willReturn($dates);
 
         $this->check($date, $region)->shouldBe(false);
     }
 
-    function it_returns_an_array_with_three_items_for_a_date_range
+    function it_returns_an_array_for_a_date_range
     (
         BankHolidayService $bankHolidayService
     ) {
         $from = DateTime::createFromFormat(TestBankHolidaysData::DATETIME_FORMAT, TestBankHolidaysData::BANK_HOLIDAY_RANGE_FROM);
         $to = DateTime::createFromFormat(TestBankHolidaysData::DATETIME_FORMAT, TestBankHolidaysData::BANK_HOLIDAY_RANGE_TO);
-        $datesSortedByDate = TestBankHolidaysData::getBankHolidaysSortedByDate();
+        $dates = TestBankHolidaysData::getBankHolidays();
 
-        $bankHolidayService->getBankHolidaysSortedByDate()->willReturn($datesSortedByDate);
+        $bankHolidayService->getBankHolidays()->willReturn($dates);
 
         $this->getAll($from, $to)->shouldBe(TestBankHolidaysData::getExpectedResultForDateRange());
     }
 
-    function it_returns_an_array_with_three_items_for_a_date_range_with_a_region_with_additional_bank_holidays
+    function it_returns_an_array_for_a_date_range_with_a_region
     (
         BankHolidayService $bankHolidayService
     ) {
         $from = DateTime::createFromFormat(TestBankHolidaysData::DATETIME_FORMAT, TestBankHolidaysData::BANK_HOLIDAY_RANGE_FROM);
         $to = DateTime::createFromFormat(TestBankHolidaysData::DATETIME_FORMAT, TestBankHolidaysData::BANK_HOLIDAY_RANGE_TO);
-        $datesSortedByRegion = TestBankHolidaysData::getBankHolidaysSortedByRegion();
+        $dates = TestBankHolidaysData::getBankHolidays();
         $region = Region::createFromString('england-and-wales');
 
-        $bankHolidayService->getBankHolidaysSortedByRegion()->willReturn($datesSortedByRegion);
+        $bankHolidayService->getBankHolidays()->willReturn($dates);
 
-        $this->getAll($from, $to, $region)->shouldBe(TestBankHolidaysData::getExpectedResultForDateRange());
+        $this->getAll($from, $to, $region)->shouldBe(TestBankHolidaysData::getExpectedResultForDateRangeWithRegion());
     }
 
     function it_returns_an_empty_array_for_a_date_range_with_no_bank_holidays
@@ -82,9 +82,9 @@ class BankHolidayServiceDecoratorSpec extends ObjectBehavior
     ) {
         $from = DateTime::createFromFormat(TestBankHolidaysData::DATETIME_FORMAT, TestBankHolidaysData::NON_BANK_HOLIDAY_RANGE_FROM);
         $to = DateTime::createFromFormat(TestBankHolidaysData::DATETIME_FORMAT, TestBankHolidaysData::NON_BANK_HOLIDAY_RANGE_TO);
-        $datesSortedByDate = TestBankHolidaysData::getBankHolidaysSortedByDate();
+        $dates = TestBankHolidaysData::getBankHolidays();
 
-        $bankHolidayService->getBankHolidaysSortedByDate()->willReturn($datesSortedByDate);
+        $bankHolidayService->getBankHolidays()->willReturn($dates);
 
         $this->getAll($from, $to)->shouldBe([]);
     }

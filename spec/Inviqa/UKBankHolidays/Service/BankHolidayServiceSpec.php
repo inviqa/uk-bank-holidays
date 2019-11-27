@@ -26,12 +26,12 @@ class BankHolidayServiceSpec extends ObjectBehavior
         $this->beConstructedWith($client, $responseParser, $cacheProvider);
     }
 
-    function it_fetches_bank_holidays_and_returns_them_sorted_by_date(
+    function it_fetches_bank_holidays_and_returns_them(
         Client $client,
         ResponseParser $responseParser,
         CacheProvider $cacheProvider
     ) {
-        $expectedReturnValue = TestBankHolidaysData::getBankHolidaysSortedByDate();
+        $expectedReturnValue = TestBankHolidaysData::getBankHolidays();
 
         $responseBody = TestResponseBodyFactory::buildWellFormedResponseJson();
         $decodedResponse = json_decode($responseBody, true);
@@ -42,25 +42,6 @@ class BankHolidayServiceSpec extends ObjectBehavior
         $cacheProvider->has(Argument::type('string'))->willReturn(false);
         $cacheProvider->set(Argument::type('string'), Argument::type('array'))->shouldBeCalled();
 
-        $this->getBankHolidaysSortedByDate()->shouldBe($expectedReturnValue);
-    }
-
-    function it_fetches_bank_holidays_and_returns_them_sorted_by_region(
-        Client $client,
-        ResponseParser $responseParser,
-        CacheProvider $cacheProvider
-    ) {
-        $expectedReturnValue = TestBankHolidaysData::getBankHolidaysSortedByRegion();
-
-        $responseBody = TestResponseBodyFactory::buildWellFormedResponseJson();
-        $decodedResponse = json_decode($responseBody, true);
-
-        $client->getBankHolidays()->willReturn($responseBody);
-        $responseParser->decodeResponse($responseBody)->willReturn($decodedResponse);
-
-        $cacheProvider->has(Argument::type('string'))->willReturn(false);
-        $cacheProvider->set(Argument::type('string'), Argument::type('array'))->shouldBeCalled();
-
-        $this->getBankHolidaysSortedByRegion()->shouldBe($expectedReturnValue);
+        $this->getBankHolidays()->shouldBe($expectedReturnValue);
     }
 }
