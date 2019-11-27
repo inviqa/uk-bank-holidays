@@ -35,27 +35,6 @@ class ApplicationSpec extends ObjectBehavior
         CacheProvider $cacheProvider,
         Configuration $configuration
     ) {
-        $date = DateTime::createFromFormat(TestBankHolidaysData::DATETIME_FORMAT, TestBankHolidaysData::BANK_HOLIDAY);
-
-        $extraConfig = [
-            'response_body' => [
-                'well-formed' => TestResponseBodyFactory::buildWellFormedResponseJson(),
-                'malformed'   => null,
-            ],
-        ];
-
-        $configuration->getExtraConfig()->willReturn($extraConfig);
-        $cacheProvider->has(Argument::type('string'))->willReturn(false);
-        $cacheProvider->set(Argument::type('string'), Argument::any())->shouldBeCalled();
-
-        $this->check($date)->shouldBe(true);
-    }
-
-    function it_returns_true_for_a_regional_bank_holiday_date
-    (
-        CacheProvider $cacheProvider,
-        Configuration $configuration
-    ) {
         $date = DateTime::createFromFormat(TestBankHolidaysData::DATETIME_FORMAT, TestBankHolidaysData::REGIONAL_BANK_HOLIDAY);
         $extraConfig = [
             'response_body' => [
@@ -72,26 +51,6 @@ class ApplicationSpec extends ObjectBehavior
     }
 
     function it_returns_false_for_a_non_bank_holiday_date
-    (
-        CacheProvider $cacheProvider,
-        Configuration $configuration
-    ) {
-        $date = DateTime::createFromFormat(TestBankHolidaysData::DATETIME_FORMAT, TestBankHolidaysData::NON_BANK_HOLIDAY);
-        $extraConfig = [
-            'response_body' => [
-                'well-formed' => TestResponseBodyFactory::buildWellFormedResponseJson(),
-                'malformed'   => null,
-            ],
-        ];
-
-        $configuration->getExtraConfig()->willReturn($extraConfig);
-        $cacheProvider->has(Argument::type('string'))->willReturn(false);
-        $cacheProvider->set(Argument::type('string'), Argument::any())->shouldBeCalled();
-
-        $this->check($date)->shouldBe(false);
-    }
-
-    function it_returns_false_for_a_non_bank_holiday_date_in_a_specific_region
     (
         CacheProvider $cacheProvider,
         Configuration $configuration

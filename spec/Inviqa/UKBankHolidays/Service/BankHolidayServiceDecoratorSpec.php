@@ -27,18 +27,6 @@ class BankHolidayServiceDecoratorSpec extends ObjectBehavior
     (
         BankHolidayService $bankHolidayService
     ) {
-        $date = DateTime::createFromFormat(TestBankHolidaysData::DATETIME_FORMAT, TestBankHolidaysData::BANK_HOLIDAY);
-        $datesSortedByDate = TestBankHolidaysData::getBankHolidaysSortedByDate();
-
-        $bankHolidayService->getBankHolidaysSortedByDate()->willReturn($datesSortedByDate);
-
-        $this->check($date)->shouldBe(true);
-    }
-
-    function it_returns_true_for_a_regional_bank_holiday_date
-    (
-        BankHolidayService $bankHolidayService
-    ) {
         $date = DateTime::createFromFormat(TestBankHolidaysData::DATETIME_FORMAT, TestBankHolidaysData::REGIONAL_BANK_HOLIDAY);
         $datesSortedByRegion = TestBankHolidaysData::getBankHolidaysSortedByRegion();
         $region = Region::createFromString('england-and-wales');
@@ -49,18 +37,6 @@ class BankHolidayServiceDecoratorSpec extends ObjectBehavior
     }
 
     function it_returns_false_for_a_non_bank_holiday_date
-    (
-        BankHolidayService $bankHolidayService
-    ) {
-        $date = DateTime::createFromFormat(TestBankHolidaysData::DATETIME_FORMAT, TestBankHolidaysData::NON_BANK_HOLIDAY);
-        $datesSortedByDate = TestBankHolidaysData::getBankHolidaysSortedByDate();
-
-        $bankHolidayService->getBankHolidaysSortedByDate()->willReturn($datesSortedByDate);
-
-        $this->check($date)->shouldBe(false);
-    }
-
-    function it_returns_false_for_a_non_bank_holiday_date_in_a_specific_region
     (
         BankHolidayService $bankHolidayService
     ) {

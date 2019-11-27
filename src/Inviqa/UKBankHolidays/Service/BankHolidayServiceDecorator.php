@@ -19,7 +19,7 @@ class BankHolidayServiceDecorator
         $this->bankHolidayService = $bankHolidayService;
     }
 
-    public function check(DateTimeInterface $dateTime, ?Region $region = null): bool
+    public function check(DateTimeInterface $dateTime, Region $region): bool
     {
         $bankHolidays = $this->getDates($region);
         $dateToCheck = $dateTime->format(self::DATETIME_FORMAT);

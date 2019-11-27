@@ -19,11 +19,9 @@ class Application
         $this->bankHolidayDecorator = new BankHolidayServiceDecorator($this->bankHolidayService);
     }
 
-    public function check(DateTimeInterface $dateTime, ?string $region = null): bool
+    public function check(DateTimeInterface $dateTime, string $region): bool
     {
-        if ($region !== null) {
-            $region = Region::createFromString($region);
-        }
+        $region = Region::createFromString($region);
 
         return $this->bankHolidayDecorator->check($dateTime, $region);
     }
