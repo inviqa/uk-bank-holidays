@@ -4,7 +4,26 @@ namespace TestService;
 
 class TestResponseBodyFactory
 {
-    public static function buildWellFormedResponseJson()
+    public static function buildSingleBehatFeatureJson(string $region, string $date): string
+    {
+        $data = [
+            $region => [
+                'division' => $region,
+                'events'   => [
+                    [
+                        'title'   => 'Sample Holiday',
+                        'date'    => $date,
+                        'notes'   => '',
+                        'bunting' => true,
+                    ],
+                ],
+            ],
+        ];
+
+        return json_encode($data);
+    }
+
+    public static function buildWellFormedResponseJson(): string
     {
         $data = [
             'england-and-wales' =>
@@ -71,7 +90,7 @@ class TestResponseBodyFactory
         return json_encode($data);
     }
 
-    public static function buildMalformedResponseJson()
+    public static function buildMalformedResponseJson(): string
     {
         return json_encode('I\'m not an array');
     }

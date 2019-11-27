@@ -8,8 +8,11 @@ class TestConfiguration implements Configuration
 {
     private $extraConfig = [
         'response_body' => [
-            // 'well-formed' => null,
-            // 'malformed'   => null,
+            'well-formed' => null,
+            'malformed'   => null,
+        ],
+        'behat_config'  => [
+            'response_body' => null,
         ],
     ];
 
@@ -25,25 +28,15 @@ class TestConfiguration implements Configuration
 
     public function addBankHolidayResult(string $region, string $date)
     {
-        $this->extraConfig['response_body'][$region] = [
-            'division' => $region,
-            'events'   => [
-                [
-                    'title'   => 'Sample Holiday',
-                    'date'    => $date,
-                    'notes'   => '',
-                    'bunting' => true,
-                ],
-            ],
-        ];
+        $this->extraConfig['behat_config']['response_body'] = TestResponseBodyFactory::buildSingleBehatFeatureJson($region, $date);
     }
 
-    public function addSuccessEvent()
+    public function addWellFormedResponseBody()
     {
         $this->extraConfig['response_body']['well-formed'] = TestResponseBodyFactory::buildWellFormedResponseJson();
     }
 
-    public function addFailureEvent()
+    public function addMalformedResponseBody()
     {
         $this->extraConfig['response_body']['malformed'] = TestResponseBodyFactory::buildMalformedResponseJson();
     }

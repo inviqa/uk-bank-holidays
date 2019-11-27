@@ -2,10 +2,9 @@
 
 namespace Domain;
 
-use Behat\Behat\Tester\Exception\PendingException;
 use Behat\Behat\Context\Context;
-use Behat\Gherkin\Node\PyStringNode;
-use Behat\Gherkin\Node\TableNode;
+use DateInterval;
+use DateTime;
 use Inviqa\UKBankHolidays\Application;
 use Inviqa\UKBankHolidays\Cache\DummyCacheProvider;
 use TestService\TestConfiguration;
@@ -54,11 +53,15 @@ class UKBankHolidaysEventContext implements Context
     }
 
     /**
-     * @Given the :arg1 is not a bank holiday
+     * @Given the :date is not a bank holiday in :region
      */
-    public function theIsNotABankHoliday($arg1)
+    public function theIsNotABankHoliday($date, $region)
     {
-        throw new PendingException();
+        // add 3 days to passed date
+        $origDate = DateTime::createFromFormat('Y-m-d', $date);
+        $newDate = $origDate->add(new DateInterval('P3D'));
+
+        $this->configuration->addBankHolidayResult($region, $newDate->format('Y-m-d'));
     }
 
     /**
@@ -66,7 +69,7 @@ class UKBankHolidaysEventContext implements Context
      */
     public function theResultShouldBeFalse()
     {
-        throw new PendingException();
+        Assert::false($this->result);
     }
 
     /**
@@ -82,13 +85,6 @@ class UKBankHolidaysEventContext implements Context
      */
     public function aDeveloperChecksIfTheDateIsBankHolidayIn($date, $region)
     {
-        $this->result = $this->application->check(\DateTime::createFromFormat('Y-m-d', $date), $region);
-    }
-
-    /**
-     * @Given the :date is not a bank holiday in :region
-     */
-    public function theIsNotABankHolidayIn($date, $region)
-    {
+        $this->result = $this->application->check(DateTime::createFromFormat('Y-m-d', $date), $region);
     }
 }

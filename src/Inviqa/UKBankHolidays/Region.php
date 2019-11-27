@@ -35,13 +35,13 @@ class Region
         return $regionObj;
     }
 
+    public function getRegion(): string
+    {
+        return $this->region;
+    }
+
     private function isAvailableRegion(string $region): bool
     {
         return in_array($region, $this->regions);
-    }
-
-    public function getRegion()
-    {
-        return $this->region;
     }
 }

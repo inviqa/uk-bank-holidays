@@ -3,8 +3,6 @@
 namespace Inviqa\UKBankHolidays\Client;
 
 use Inviqa\UKBankHolidays\Configuration;
-use Inviqa\UKBankHolidays\Exception\UKBankHolidaysException;
-use RuntimeException;
 
 class FakeClient implements Client
 {
@@ -19,18 +17,16 @@ class FakeClient implements Client
     {
         $extraConfig = $this->configuration->getExtraConfig();
 
-        // $response = null;
+        $response = null;
 
-        return json_encode($extraConfig['response_body']);
+        if ($extraConfig['response_body']['well-formed'] !== null) {
+            $response = $extraConfig['response_body']['well-formed'];
+        } elseif ($extraConfig['response_body']['malformed'] !== null) {
+            $response = $extraConfig['response_body']['malformed'];
+        } elseif ($extraConfig['behat_config']['response_body'] !== null) {
+            $response = $extraConfig['behat_config']['response_body'];
+        }
 
-        // if ($extraConfig['response_body']['well-formed'] !== null) {
-        //     $response = $extraConfig['response_body']['well-formed'];
-        // }
-        //
-        // if ($extraConfig['response_body']['malformed'] !== null) {
-        //     $response = $extraConfig['response_body']['malformed'];
-        // }
-        //
-        // return $response;
+        return $response;
     }
 }

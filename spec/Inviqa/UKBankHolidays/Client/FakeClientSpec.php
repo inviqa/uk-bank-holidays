@@ -25,8 +25,7 @@ class FakeClientSpec extends ObjectBehavior
 
         $configuration->getExtraConfig()->willReturn([
             'response_body' => [
-                'well-formed' => $responseBody,
-                'malformed'   => null,
+                'well-formed' => $responseBody
             ],
         ]);
 
