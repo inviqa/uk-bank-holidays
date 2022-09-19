@@ -50,6 +50,29 @@ class ApplicationSpec extends ObjectBehavior
         $this->check($date, 'england-and-wales')->shouldBe(true);
     }
 
+    function it_describes_a_bank_holiday_date
+    (
+        CacheProvider $cacheProvider,
+        Configuration $configuration
+    ) {
+        $date = DateTime::createFromFormat(TestBankHolidaysData::DATETIME_FORMAT, TestBankHolidaysData::BANK_HOLIDAY);
+        $extraConfig = [
+            'response_body' => [
+                'well-formed' => TestResponseBodyFactory::buildWellFormedResponseJson(),
+                'malformed'   => null,
+            ],
+        ];
+
+        $configuration->getExtraConfig()->willReturn($extraConfig);
+        $cacheProvider->has(Argument::type('string'))->willReturn(false);
+        $cacheProvider->set(Argument::type('string'), Argument::any())->shouldBeCalled();
+
+        $info = $this->describe($date, 'england-and-wales');
+        $info->offsetGet('title')->shouldBe(TestBankHolidaysData::BANK_HOLIDAY_TITLE);
+        $info->offsetGet('date')->shouldBe(TestBankHolidaysData::BANK_HOLIDAY);
+        $info->offsetGet('region')->shouldBe('england-and-wales');
+    }
+
     function it_returns_false_for_a_non_bank_holiday_date
     (
         CacheProvider $cacheProvider,
@@ -68,6 +91,26 @@ class ApplicationSpec extends ObjectBehavior
         $cacheProvider->set(Argument::type('string'), Argument::any())->shouldBeCalled();
 
         $this->check($date, 'scotland')->shouldBe(false);
+    }
+
+    function it_does_not_describe_a_non_bank_holiday_date
+    (
+        CacheProvider $cacheProvider,
+        Configuration $configuration
+    ) {
+        $date = DateTime::createFromFormat(TestBankHolidaysData::DATETIME_FORMAT, TestBankHolidaysData::NON_BANK_HOLIDAY);
+        $extraConfig = [
+            'response_body' => [
+                'well-formed' => TestResponseBodyFactory::buildWellFormedResponseJson(),
+                'malformed'   => null,
+            ],
+        ];
+
+        $configuration->getExtraConfig()->willReturn($extraConfig);
+        $cacheProvider->has(Argument::type('string'))->willReturn(false);
+        $cacheProvider->set(Argument::type('string'), Argument::any())->shouldBeCalled();
+
+        $this->describe($date, 'england-and-wales')->shouldBe(null);
     }
 
     function it_returns_an_array_for_a_date_range

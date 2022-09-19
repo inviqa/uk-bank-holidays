@@ -26,6 +26,13 @@ class Application
         return $this->bankHolidayDecorator->check($dateTime, $region);
     }
 
+    public function describe(DateTimeInterface $dateTime, string $region): ?array
+    {
+        $region = Region::createFromString($region);
+
+        return $this->bankHolidayDecorator->describe($dateTime, $region);
+    }
+
     public function getAll(?DateTimeInterface $from = null, ?DateTimeInterface $to = null, ?string $region = null): array
     {
         if ($region !== null) {
