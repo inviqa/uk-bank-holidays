@@ -27,6 +27,14 @@ class BankHolidayServiceDecorator
         return array_key_exists($key, $bankHolidays);
     }
 
+    public function describe(DateTimeInterface $dateTime, Region $region): ?array
+    {
+        $bankHolidays = $this->bankHolidayService->getBankHolidays();
+
+        $key = $region->getRegion() . '_' . $dateTime->format(self::DATETIME_FORMAT);
+
+        return $bankHolidays[$key] ?? null;
+    }
 
     public function getAll(?DateTimeInterface $from = null, ?DateTimeInterface $to = null, ?Region $region = null): array
     {

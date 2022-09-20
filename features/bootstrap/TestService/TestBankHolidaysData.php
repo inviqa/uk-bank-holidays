@@ -6,6 +6,7 @@ class TestBankHolidaysData
 {
     public const DATETIME_FORMAT = 'Y-m-d';
     public const BANK_HOLIDAY = '2019-12-25';
+    public const BANK_HOLIDAY_TITLE = 'Christmas Day';
     public const NON_BANK_HOLIDAY = '2019-04-04';
     public const BANK_HOLIDAY_RANGE_FROM = '2019-11-11';
     public const BANK_HOLIDAY_RANGE_TO = '2019-12-29';
