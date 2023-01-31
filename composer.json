@@ -15,11 +15,11 @@
     "require": {
         "php": ">=7.4.0",
         "ext-json": "*",
-        "guzzlehttp/guzzle": "^6"
+        "guzzlehttp/guzzle": "^6 || ^7"
     },
     "require-dev": {
         "behat/behat": "^3.5",
-        "phpspec/phpspec": "^6.0",
+        "phpspec/phpspec": "^6 || ^7",
         "webmozart/assert": "^1.4"
     },
     "autoload": {
